@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>For You ❤️</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', cursive;
+  background: linear-gradient(135deg, #ff758c, #ff7eb3);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  color: #fff;
+}
+
+.card {
+  background: rgba(255,255,255,0.15);
+  padding: 35px;
+  border-radius: 25px;
+  text-align: center;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+  max-width: 400px;
+  z-index: 2;
+}
+
+.photo {
+  width: 100%;
+  border-radius: 20px;
+  margin-bottom: 15px;
+}
+
+button {
+  padding: 12px 25px;
+  border-radius: 30px;
+  background: #ff4d6d;
+  color: white;
+  border: none;
+}
+
+.hidden { display:none; }
+
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🔐 PASSWORD -->
+<script>
+let pass = prompt("Only for Jyo ❤️ Enter password");
+if(pass !== "jyo123"){
+ document.body.innerHTML = "<h1 style='margin-top:40%'>Access Denied 💔</h1>";
+}
+</script>
+
+<!-- 🎶 MUSIC -->
+<audio id="music" loop>
+  <source src="song.mp3.mpeg" type="audio/mpeg">
+</audio>
+
+<script>
+document.body.addEventListener("click", function(){
+ document.getElementById("music").play();
+}, { once:true });
+</script>
+
+<div class="card">
+<h1>Happy Birthday, My Love ❤️</h1>
+
+<img src="photo.jpg.jpg" class="photo">
+
+<p>To the most special person in my life 💕</p>
+
+<button onclick="startLoveLetter()">Open My Heart 💌</button>
+
+<div id="message" class="hidden">
+<span id="typedText"></span>
+</div>
+
+<div id="proposal" class="hidden">
+💍 Will you always be mine? ❤️
+</div>
+
+<br><br>
+<button onclick="startFireworks()">Surprise 🎆</button>
+</div>
+
+<canvas id="fire"></canvas>
+
+<!-- 💌 POPUP -->
+<div id="popupMsg" style="
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255,255,255,0.15);
+  padding: 25px 35px;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  font-size: 26px;
+  color: white;
+  display: none;
+  z-index: 10;
+  text-align:center;
+">
+  <span id="popupText"></span>
+</div>
+
+<script>
+// 💌 LOVE LETTER
+const text = `💖 Dear Jyo,
+
+On your special day, I just want you to know...
+You are the most beautiful part of my life ❤️
+Every moment with you feels magical ✨
+I am so lucky to have you 💕
+Forever yours,
+Vishal 💫`;
+
+let i = 0;
+
+function startLoveLetter(){
+ document.getElementById("message").style.display="block";
+ typeWriter();
+}
+
+function typeWriter(){
+ if(i < text.length){
+  document.getElementById("typedText").innerHTML +=
+  text.charAt(i) === '\\n' ? '<br>' : text.charAt(i);
+  i++;
+  setTimeout(typeWriter,40);
+ } else {
+  document.getElementById("proposal").style.display="block";
+ }
+}
+
+// 💌 POPUP TYPING + HEARTS
+function showPopup(){
+ const popup = document.getElementById("popupMsg");
+ const textEl = document.getElementById("popupText");
+
+ popup.style.display = "block";
+ textEl.innerHTML = "";
+
+ const msg = "🎂 Happy Birthday Darling ❤️";
+
+ let i = 0;
+ function type(){
+  if(i < msg.length){
+    textEl.innerHTML += msg.charAt(i);
+    i++;
+    setTimeout(type,60);
+  }
+ }
+ type();
+
+ let interval = setInterval(()=>{
+   let heart = document.createElement("div");
+   heart.innerHTML = "💖";
+   heart.style.position = "fixed";
+   heart.style.left = (50 + (Math.random()*20 - 10)) + "%";
+   heart.style.top = (50 + (Math.random()*20 - 10)) + "%";
+   heart.style.fontSize = "20px";
+   document.body.appendChild(heart);
+
+   setTimeout(()=>heart.remove(),1500);
+ },200);
+
+ setTimeout(()=>{
+   popup.style.display = "none";
+   clearInterval(interval);
+ },5000);
+}
+
+// 🎆 FIREWORKS (FIXED NO BLACK SCREEN)
+function startFireworks(){
+ showPopup();
+
+ const canvas = document.getElementById("fire");
+ const ctx = canvas.getContext("2d");
+
+ canvas.width = window.innerWidth;
+ canvas.height = window.innerHeight;
+
+ let particles = [];
+
+ function explode(x,y){
+  for(let i=0;i<40;i++){
+    particles.push({
+      x:x,
+      y:y,
+      vx:(Math.random()-0.5)*6,
+      vy:(Math.random()-0.5)*6,
+      alpha:1
+    });
+  }
+ }
+
+ function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  particles.forEach((p,i)=>{
+    p.x += p.vx;
+    p.y += p.vy;
+    p.alpha -= 0.02;
+
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,2,0,Math.PI*2);
+    ctx.fillStyle = "hsl(" + Math.random()*360 + ",100%,50%)";
+    ctx.fill();
+
+    if(p.alpha<=0){
+      particles.splice(i,1);
+    }
+  });
+
+  requestAnimationFrame(animate);
+ }
+
+ setInterval(()=>{
+   explode(Math.random()*canvas.width, Math.random()*canvas.height/2);
+ },700);
+
+ animate();
+}
+
+</script>
+
+</body>
+</html>
